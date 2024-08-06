@@ -1,25 +1,19 @@
 package com.arges.notforkrepolister.service;
 
+import static com.arges.notforkrepolister.util.GithubUrlUtil.*;
+
 import com.arges.notforkrepolister.model.GithubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class GithubNonForkRepositoriesInfoService implements GithubRepositoriesInfoService {
 
-    private static final String USER_REPOS_TEMPLATE = "/users/{0}/repos";
-    private static final String API_URL = "https://api.github.com";
-
-    private static final Function<String, String> userReposUrl =
-            (userLogin) -> API_URL + MessageFormat.format(USER_REPOS_TEMPLATE, userLogin);
-
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Override
     public List<GithubRepository> findRepositoriesByUserLogin(String userLogin) {
