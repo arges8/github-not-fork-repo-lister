@@ -21,16 +21,12 @@ public class GithubRepositoriesInfoController {
 
     @GetMapping(value = "/{userLogin}", produces = "application/json")
     List<GithubRepositoryResponse> getRepositories(@PathVariable String userLogin) {
-        try {
-            var repos = githubRepositoriesInfoService.findRepositoriesByUserLogin(userLogin);
+        var repos = githubRepositoriesInfoService.findRepositoriesByUserLogin(userLogin);
 
-            return repos.stream()
-                    .filter(repo -> !repo.fork())
-                    .map(repo -> mapToResponse(userLogin, repo))
-                    .toList();
-        } catch (HttpClientErrorException.NotFound exception) {
-            throw new GithubUserNotFoundException(userLogin);
-        }
+        return repos.stream()
+                .filter(repo -> !repo.fork())
+                .map(repo -> mapToResponse(userLogin, repo))
+                .toList();
     }
 
     private GithubRepositoryResponse mapToResponse(String userLogin, GithubRepository repo) {
