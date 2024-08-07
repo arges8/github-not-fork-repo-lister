@@ -2,11 +2,16 @@ package com.arges.notforkrepolister.service;
 
 import com.arges.notforkrepolister.model.GitBranch;
 import com.arges.notforkrepolister.util.GithubUrlUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -28,6 +33,10 @@ class GithubBranchInfoServiceImplTest {
 
     @Mock
     private HttpEntity httpEntity;
+
+    @Spy
+    private ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
 
     @InjectMocks
     private GithubBranchInfoServiceImpl service;
@@ -87,6 +96,21 @@ class GithubBranchInfoServiceImplTest {
         // verify
         var returnBranches = service.getBranches(userLogin, repo);
         assertTrue(returnBranches.isEmpty());
+    }
+
+    @Test
+    void verifyJsonParseExceptionIsThrown() throws JsonProcessingException {
+        // given
+        String faultyJson = "[]";
+
+        // when then
+        when(restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class))
+                .thenReturn(new ResponseEntity<>(faultyJson, HttpStatus.OK));
+        when(objectMapper.readValue(faultyJson, GitBranch[].class))
+                .thenThrow(JsonProcessingException.class);
+
+        // verify
+        assertThrows(JsonParseException.class, () -> service.getBranches(userLogin, repo));
     }
 
     private List<GitBranch> expectedBranches() {

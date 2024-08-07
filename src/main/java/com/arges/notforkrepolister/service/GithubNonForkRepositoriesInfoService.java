@@ -3,7 +3,6 @@ package com.arges.notforkrepolister.service;
 import static com.arges.notforkrepolister.util.GithubUrlUtil.*;
 
 import com.arges.notforkrepolister.model.GithubRepository;
-import com.arges.notforkrepolister.web.GithubUserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

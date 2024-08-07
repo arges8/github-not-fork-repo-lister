@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -93,6 +94,21 @@ class GithubNonForkRepositoriesInfoServiceTest {
         var returnRepos = service.findRepositoriesByUserLogin(userLogin);
 
         assertTrue(returnRepos.isEmpty());
+    }
+
+    @Test
+    void verifyGithubUserNotFoundExceptionIsThrown() {
+        // given
+        String nonExistingUser = "i-do-not-exist";
+        String nonExistUserUrl = userReposUrl.apply(nonExistingUser);
+
+        // when then
+        when(restTemplate.exchange(nonExistUserUrl, HttpMethod.GET, httpEntity, GithubRepository[].class))
+                .thenThrow(HttpClientErrorException.NotFound.class);
+
+        // verify
+        assertThrows(GithubUserNotFoundException.class,
+                () -> service.findRepositoriesByUserLogin(nonExistingUser));
     }
 
     private GithubRepository[] mockNonForkRepositories() {
