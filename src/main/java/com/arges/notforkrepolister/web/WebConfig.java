@@ -7,6 +7,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import static io.micrometer.common.util.StringUtils.isNotBlank;
+
 @Configuration
 public class WebConfig {
 
@@ -22,7 +24,7 @@ public class WebConfig {
     public HttpEntity httpEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/vnd.github+json");
-        if(githubToken != null) {
+        if(isNotBlank(githubToken)) {
             headers.setBearerAuth(githubToken);
         }
         return new HttpEntity(headers);
