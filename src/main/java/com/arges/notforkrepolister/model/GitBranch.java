@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class GitBranch {
 
     @JsonAlias("name")

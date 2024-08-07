@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ public class GithubRepositoriesInfoController {
         var repos = githubRepositoriesInfoService.findRepositoriesByUserLogin(userLogin);
 
         return repos.stream()
-                .filter(repo -> !repo.fork())
                 .map(repo -> mapToResponse(userLogin, repo))
                 .toList();
     }

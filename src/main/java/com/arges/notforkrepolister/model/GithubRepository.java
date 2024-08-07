@@ -1,3 +1,3 @@
 package com.arges.notforkrepolister.model;
 
-public record GithubRepository(long id, String name, boolean fork) {}
+public record GithubRepository(String name, boolean fork) {}

@@ -28,7 +28,9 @@ public class GithubNonForkRepositoriesInfoService implements GithubRepositoriesI
                     httpEntity,
                     GithubRepository[].class
             ).getBody();
-            return Arrays.asList(repos);
+            return Arrays.stream(repos)
+                    .filter(repo -> !repo.fork())
+                    .toList();
         } catch (HttpClientErrorException.NotFound exception) {
             throw new GithubUserNotFoundException(userLogin);
         }
